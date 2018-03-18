@@ -12,18 +12,21 @@ router.post('/signup', (req, res) => {
         name: req.body.name,
         email: req.body.email,
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        dob: req.body.dob,
+        gender: req.body.gender,
+        profilePicture: req.body.profilePicture
     });
     User.addUser(newUser, (err, user) => {
         if (err) {
             res.json({
                 success: false,
-                msg: 'Failed to register the user'
+                msg: 'Something Bad happened.'
             });
         } else {
             res.json({
                 success: true,
-                msg: 'User registered'
+                msg: 'Yay! Registered Successfully. You can now Signin'
             });
         }
     })
@@ -40,7 +43,8 @@ router.post('/signin', function (req, res, next) {
         if (!user) {
             return res.json({
                 success: false,
-                msg: 'User not found'
+                msg: 'Sorry, We are unable to recognize you',
+                helpMsg: 'Please check the credentials'
             });
         }
         User.comparePassword(password, user.password, function (err, isMatch) {
@@ -60,12 +64,13 @@ router.post('/signin', function (req, res, next) {
                         name: user.name,
                         username: user.username,
                         email: user.email
-                    }
+                    },
+                    msg: 'Welcome, '
                 });
             } else {
                 return res.json({
                     success: false,
-                    msg: 'Wrong Password'
+                    msg: 'Wrong Password',
                 });
             }
         })

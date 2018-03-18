@@ -39,25 +39,27 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 
-  socket.on('mood', (moodText) => {
-    console.log('Mood Received: ' + moodText);
+  socket.on('mood', (moodMatter) => {
+    console.log('Mood Received: ' + JSON.stringify(moodMatter));
 
     let date = new Date().toLocaleDateString();
 
     let mood = new Mood({
-      text: moodText,
-      updated_at: date
+      title: moodMatter.title,
+      time: moodMatter.time,
+      description:moodMatter.description,
+      mediaId: moodMatter.mediaID
     });
 
     mood.save((err, result) => {
       console.log('Result: ' + result);
-      Mood.find((err, response) => {
+      Mood.find({mediaId: moodMatter.mediaID},(err, response) => {
         console.log('Response: ' + response);
         io.emit('mood', {
           type: 'new-mood',
           text: response
         });
-      });
+      }).sort({time: -1});
     });
   });
 });

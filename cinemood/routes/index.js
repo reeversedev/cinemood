@@ -27,13 +27,40 @@ router.get('/discover/:id', (req, res) => {
 
 
 router.get('/getMood/:id', (req, res) => {
-    let mediaId = req.params.id;
     console.log('Entered API.');
-    Moods.getMood(mediaId, (err, response) => {
-        if(err) {
+    Moods.find({
+        mediaId: req.params.id
+    }, (err, response) => {
+        if (err) {
             console.log(err);
         }
+        console.log(response);
         res.json(response);
+    }).sort({time: -1});
+    // Moods.getMood(mediaId, (err, response) => {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    //     res.json(response);
+    // });
+});
+
+router.post('/postMood', (req, res) => {
+    const newMood = {
+        mediaId: req.body.mediaID,
+        title: req.body.title,
+        description: req.body.description,
+        time: req.body.time
+    }
+    Moods.newMood(newMood, function (err, mood) {
+        if (err) {
+            res.json({
+                message: 'Error posting the mood',
+                success: false
+            });
+        }
+        console.log('Mood', mood);
+        res.json(mood);
     });
 });
 

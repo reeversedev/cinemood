@@ -5,7 +5,14 @@ const userSchema = mongoose.Schema({
     name: String,
     email: String,
     username: String,
-    password: String
+    password: String,
+    favourite: {
+        type: Object,
+        required: false
+    },
+    profilePicture: String,
+    dob: Date,
+    gender: String
 });
 
 const User = module.exports = mongoose.model('User', userSchema);
